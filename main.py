@@ -1,13 +1,8 @@
 import sys
 
-from puroboros import scan
+from puroboros.context import Context
 from puroboros.defs import Token, TokenType
-
-
-def init():
-    scan.putback_c = None
-    scan.infile = None
-    scan.line = 1
+from puroboros.scan import Scanner
 
 
 tok_str = {
@@ -19,9 +14,10 @@ tok_str = {
 }
 
 
-def scanfile():
+def scanfile(context: Context) -> None:
+    scanner = Scanner(context)
     token = Token()
-    while scan.scan(token):
+    while scanner.scan(token):
         print(f'Token {tok_str[token.type]}', end='')
         if (token.type == TokenType.T_INTLIT):
             print(f', value {token.intvalue}', end='')
@@ -29,8 +25,8 @@ def scanfile():
 
 
 if __name__ == '__main__':
-    init()
+    context = Context()
 
     with open(sys.argv[1], 'rt') as fi:
-        scan.infile = fi
-        scanfile()
+        context.infile = fi
+        scanfile(context)

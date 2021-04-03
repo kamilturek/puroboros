@@ -3,8 +3,9 @@ from unittest.mock import patch
 
 import pytest
 
-from puroboros import scan
+from puroboros.context import Context
 from puroboros.defs import Token, TokenType
+from puroboros.scan import Scanner
 
 
 class TestScan:
@@ -24,8 +25,10 @@ class TestScan:
         ]
     )
     def test_scan(self, infile_value, expected_token):
-        with patch.object(scan, 'infile', StringIO(infile_value)):
-            token = Token()
-            scan.scan(token)
+        context = Context()
+        scanner = Scanner(context)
+        token = Token()
+        with patch.object(context, 'infile', StringIO(infile_value)):
+            scanner.scan(token)
 
         assert token == expected_token
