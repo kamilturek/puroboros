@@ -8,6 +8,7 @@ class TokenType(Enum):
     T_STAR = 2
     T_SLASH = 3
     T_INTLIT = 4
+    T_EOF = 999
 
 
 @dataclass

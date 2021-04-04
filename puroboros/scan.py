@@ -39,7 +39,7 @@ class Scanner:
         c = self.skip()
         match c:
             case '':
-                return False
+                token.type = TokenType.T_EOF
             case '+':
                 token.type = TokenType.T_PLUS
             case '-':

@@ -9,10 +9,10 @@ from puroboros.scan import Scanner
 
 
 class TestScan:
-
     @pytest.mark.parametrize(
         'infile_value,expected_token',
         [
+            ('', Token(TokenType.T_EOF)),
             ('+', Token(TokenType.T_PLUS)),
             ('-', Token(TokenType.T_MINUS)),
             ('*', Token(TokenType.T_STAR)),
