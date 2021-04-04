@@ -1,0 +1,19 @@
+---
+name: ci
+
+on:
+  push:
+    branches:
+      - master
+  pull_requests:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Run tests
+        run: |
+          pip install -r requirements/dev.txt
+          pytest
