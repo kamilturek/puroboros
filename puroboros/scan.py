@@ -36,6 +36,7 @@ class Scanner:
         return val
 
     def scan(self, token: Token) -> bool:
+        # consider returning token instead of retrieving
         c = self.skip()
         match c:
             case '':

@@ -15,3 +15,19 @@ class TokenType(Enum):
 class Token:
     type: TokenType = None
     intvalue: int = None
+
+
+class ASTNodeType(Enum):
+    A_ADD = 0
+    A_SUBTRACT = 1
+    A_MULTIPLY = 2
+    A_DIVIDE = 3
+    A_INTLIT = 4
+
+
+@dataclass
+class ASTNode:
+    op: ASTNodeType = None
+    left: ASTNode = None
+    right: ASTNode = None
+    intvalue: int = None
