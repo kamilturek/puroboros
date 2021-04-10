@@ -55,6 +55,9 @@ class TestArithmeticOperator:
 
 class TestBinaryExpression:
     def test_one_level(self):
+        """
+        5
+        """
         context = Context()
         scanner = Scanner(context)
         with patch.object(context, 'infile', StringIO('5')):
