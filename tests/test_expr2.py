@@ -6,27 +6,33 @@ import pytest
 from puroboros.context import Context
 from puroboros.defs import ASTNode, ASTNodeType, Token, TokenType
 from puroboros.exceptions import ParserError
-from puroboros.expr2 import primary, arithop, bin_expr, multiplicative_expr, additive_expr
+from puroboros.expr2 import RecursiveDescentParser
 from puroboros.scan import Scanner
 
 
+@pytest.fixture
+def parser():
+    context = Context()
+    scanner = Scanner(context)
+    parser = RecursiveDescentParser(scanner)
+    return parser
+
+
 class TestPrimary:
-    def test_primary_success(self):
-        context = Context()
+    def test_primary_success(self, parser):
         token = Token(TokenType.T_INTLIT, 5)
-        node = primary(token, context)
+        node = parser.primary(token)
 
         assert node.op == ASTNodeType.A_INTLIT
         assert node.intvalue == 5
         assert node.left is None
         assert node.right is None
 
-    def test_primary_failure(self):
-        context = Context()
+    def test_primary_failure(self, parser):
         token = Token(TokenType.T_STAR)
 
         with pytest.raises(ParserError) as e:
-            primary(token, context)
+            parser.primary(token)
 
         assert str(e.value) == 'Syntax error on line 1'
 
@@ -41,24 +47,22 @@ class TestArithmeticOperator:
             (TokenType.T_SLASH, ASTNodeType.A_DIVIDE),
         ]
     )
-    def test_arithop_success(self, token_type, expected_node_type):
-        node_type = arithop(token_type, Context())
+    def test_arithop_success(self, parser, token_type, expected_node_type):
+        node_type = parser.arith_op(token_type)
 
         assert node_type == expected_node_type
 
-    def test_arithop_failure(self):
+    def test_arithop_failure(self, parser):
         with pytest.raises(ParserError) as e:
-            arithop(TokenType.T_EOF, Context())
+            parser.arith_op(TokenType.T_EOF)
 
-        assert str(e.value) == 'Unknown token in arithop() on line 1'
+        assert str(e.value) == 'Unknown token on line 1'
 
 
 class TestMultiplicativeExpression:
-    def test_int_literal(self):
-        context = Context()
-        scanner = Scanner(context)
-        with patch.object(context, 'infile', StringIO('5')):
-            node, op_token = multiplicative_expr(scanner, context)
+    def test_int_literal(self, parser):
+        with patch.object(parser.context, 'infile', StringIO('5')):
+            node, op_token = parser.multiplicative_expr()
 
         assert node == ASTNode(
             op=ASTNodeType.A_INTLIT,
@@ -68,11 +72,9 @@ class TestMultiplicativeExpression:
             type=TokenType.T_EOF,
         )
 
-    def test_int_literal_and_additive_expression(self):
-        context = Context()
-        scanner = Scanner(context)
-        with patch.object(context, 'infile', StringIO('5 + 4')):
-            node, op_token = multiplicative_expr(scanner, context)
+    def test_int_literal_and_additive_expression(self, parser):
+        with patch.object(parser.context, 'infile', StringIO('5 + 4')):
+            node, op_token = parser.multiplicative_expr()
 
         assert node == ASTNode(
             op=ASTNodeType.A_INTLIT,
@@ -82,16 +84,14 @@ class TestMultiplicativeExpression:
             type=TokenType.T_PLUS,
         )
 
-    def test_single_expression(self):
+    def test_single_expression(self, parser):
         """
           *
          / \
         2   3
         """
-        context = Context()
-        scanner = Scanner(context)
-        with patch.object(context, 'infile', StringIO('2 * 3')):
-            node, op_token = multiplicative_expr(scanner, context)
+        with patch.object(parser.context, 'infile', StringIO('2 * 3')):
+            node, op_token = parser.multiplicative_expr()
 
         assert node == ASTNode(
             op=ASTNodeType.A_MULTIPLY,
@@ -108,7 +108,7 @@ class TestMultiplicativeExpression:
             type=TokenType.T_EOF,
         )
 
-    def test_double_expression(self):
+    def test_double_expression(self, parser):
         """
             *
            / \
@@ -116,10 +116,8 @@ class TestMultiplicativeExpression:
          / \
         2   3
         """
-        context = Context()
-        scanner = Scanner(context)
-        with patch.object(context, 'infile', StringIO('2 * 3 * 4')):
-            node, op_token = multiplicative_expr(scanner, context)
+        with patch.object(parser.context, 'infile', StringIO('2 * 3 * 4')):
+            node, op_token = parser.multiplicative_expr()
 
         assert node == ASTNode(
             op=ASTNodeType.A_MULTIPLY,
@@ -143,7 +141,7 @@ class TestMultiplicativeExpression:
             type=TokenType.T_EOF,
         )
 
-    def test_mixed_expression(self):
+    def test_mixed_expression(self, parser):
         """
             +
            / \
@@ -151,10 +149,8 @@ class TestMultiplicativeExpression:
          / \
         2   3
         """
-        context = Context()
-        scanner = Scanner(context)
-        with patch.object(context, 'infile', StringIO('2 * 3 + 4')):
-            node, op_token = multiplicative_expr(scanner, context)
+        with patch.object(parser.context, 'infile', StringIO('2 * 3 + 4')):
+            node, op_token = parser.multiplicative_expr()
 
         assert node == ASTNode(
             op=ASTNodeType.A_MULTIPLY,
@@ -173,30 +169,26 @@ class TestMultiplicativeExpression:
 
 
 class TestAdditiveExpression:
-    def test_int_literal(self):
+    def test_int_literal(self, parser):
         """
         5
         """
-        context = Context()
-        scanner = Scanner(context)
-        with patch.object(context, 'infile', StringIO('5')):
-            node = additive_expr(scanner, context)
+        with patch.object(parser.context, 'infile', StringIO('5')):
+            node = parser.additive_expr()
 
         assert node == ASTNode(
             op=ASTNodeType.A_INTLIT,
             intvalue=5,
         )
 
-    def test_single_expression(self):
+    def test_single_expression(self, parser):
         """
           +
          / \
         2   3
         """
-        context = Context()
-        scanner = Scanner(context)
-        with patch.object(context, 'infile', StringIO('2 + 3')):
-            node= additive_expr(scanner, context)
+        with patch.object(parser.context, 'infile', StringIO('2 + 3')):
+            node = parser.additive_expr()
 
         assert node == ASTNode(
             op=ASTNodeType.A_ADD,
@@ -210,7 +202,7 @@ class TestAdditiveExpression:
             ),
         )
 
-    def test_double_expression(self):
+    def test_double_expression(self, parser):
         """
             +
            / \
@@ -218,10 +210,8 @@ class TestAdditiveExpression:
          / \
         2   3
         """
-        context = Context()
-        scanner = Scanner(context)
-        with patch.object(context, 'infile', StringIO('2 + 3 + 4')):
-            node = additive_expr(scanner, context)
+        with patch.object(parser.context, 'infile', StringIO('2 + 3 + 4')):
+            node = parser.additive_expr()
 
         assert node == ASTNode(
             op=ASTNodeType.A_ADD,
@@ -242,7 +232,7 @@ class TestAdditiveExpression:
             ),
         )
 
-    def test_mixed_expression(self):
+    def test_mixed_expression(self, parser):
         """
             +
            / \
@@ -250,11 +240,9 @@ class TestAdditiveExpression:
          / \
         2   3
         """
-        context = Context()
-        scanner = Scanner(context)
-        with patch.object(context, 'infile', StringIO('2 * 3 + 4')):
-            node = additive_expr(scanner, context)
-
+        with patch.object(parser.context, 'infile', StringIO('2 * 3 + 4')):
+            node = parser.additive_expr()
+# 
         assert node == ASTNode(
             op=ASTNodeType.A_ADD,
             left=ASTNode(
