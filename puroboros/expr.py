@@ -28,14 +28,13 @@ def arithop(tok: TokenType, context: Context) -> TokenType:
 
 
 def binexpr(scanner: Scanner, context: Context) -> ASTNode:
-    tok = Token()
-    scanner.scan(tok)
-    left = primary(tok, context)
+    left_token = scanner.scan()
+    left = primary(left_token, context)
 
-    scanner.scan(tok)
-    if tok.type == TokenType.T_EOF:
+    op_token = scanner.scan()
+    if op_token.type == TokenType.T_EOF:
         return left
-    nodetype = arithop(tok.type, context)
+    nodetype = arithop(op_token.type, context)
 
     right = binexpr(scanner, context)
 

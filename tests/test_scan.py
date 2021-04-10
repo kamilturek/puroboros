@@ -5,6 +5,7 @@ import pytest
 
 from puroboros.context import Context
 from puroboros.defs import Token, TokenType
+from puroboros.exceptions import ScannerError
 from puroboros.scan import Scanner
 
 
@@ -27,8 +28,18 @@ class TestScan:
     def test_scan(self, infile_value, expected_token):
         context = Context()
         scanner = Scanner(context)
-        token = Token()
         with patch.object(context, 'infile', StringIO(infile_value)):
-            scanner.scan(token)
+            token = scanner.scan()
 
         assert token == expected_token
+
+    def test_raises_scanner_error_on_unrecognized_character(self):
+        context = Context()
+        scanner = Scanner(context)
+        with (
+            patch.object(context, 'infile', StringIO('#')),
+            pytest.raises(ScannerError) as e
+        ):
+            scanner.scan()
+
+        assert str(e.value) == 'Unrecognized character "#" on line 1'

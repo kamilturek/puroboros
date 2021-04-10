@@ -28,7 +28,7 @@ class TestPrimary:
         with pytest.raises(ParserError) as e:
             primary(token, context)
 
-        assert str(e.value) == 'Syntax error on line 0'
+        assert str(e.value) == 'Syntax error on line 1'
 
 
 class TestArithmeticOperator:
@@ -50,7 +50,7 @@ class TestArithmeticOperator:
         with pytest.raises(ParserError) as e:
             arithop(TokenType.T_EOF, Context())
 
-        assert str(e.value) == 'Unknown token in arithop() on line 0'
+        assert str(e.value) == 'Unknown token in arithop() on line 1'
 
 
 class TestBinaryExpression:
