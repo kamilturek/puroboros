@@ -4,7 +4,7 @@ from unittest.mock import patch
 import pytest
 
 from puroboros.context import Context
-from puroboros.defs import Token, TokenType
+from puroboros.defs import Token
 from puroboros.exceptions import ScannerError
 from puroboros.scan import Scanner
 
@@ -13,16 +13,16 @@ class TestScan:
     @pytest.mark.parametrize(
         'infile_value,expected_token',
         [
-            ('', Token(TokenType.T_EOF)),
-            ('+', Token(TokenType.T_PLUS)),
-            ('-', Token(TokenType.T_MINUS)),
-            ('*', Token(TokenType.T_STAR)),
-            ('/', Token(TokenType.T_SLASH)),
-            ('1', Token(TokenType.T_INTLIT, 1)),
-            ('21', Token(TokenType.T_INTLIT, 21)),
-            ('321', Token(TokenType.T_INTLIT, 321)),
-            ('4321', Token(TokenType.T_INTLIT, 4321)),
-            ('54321', Token(TokenType.T_INTLIT, 54321)),
+            ('', Token(Token.Type.T_EOF)),
+            ('+', Token(Token.Type.T_PLUS)),
+            ('-', Token(Token.Type.T_MINUS)),
+            ('*', Token(Token.Type.T_STAR)),
+            ('/', Token(Token.Type.T_SLASH)),
+            ('1', Token(Token.Type.T_INTLIT, 1)),
+            ('21', Token(Token.Type.T_INTLIT, 21)),
+            ('321', Token(Token.Type.T_INTLIT, 321)),
+            ('4321', Token(Token.Type.T_INTLIT, 4321)),
+            ('54321', Token(Token.Type.T_INTLIT, 54321)),
         ]
     )
     def test_scan(self, infile_value, expected_token):

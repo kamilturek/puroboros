@@ -1,11 +1,11 @@
-from puroboros.defs import ASTNode, ASTNodeType
+from puroboros.defs import ASTNode
 from puroboros.interp import interpret_ast
 
 
 class TestInterpreter:
     def test_int_literal(self):
         node = ASTNode(
-            op=ASTNodeType.A_INTLIT,
+            op=ASTNode.Type.A_INTLIT,
             intvalue=5,
         )
         val = interpret_ast(node)
@@ -17,13 +17,13 @@ class TestInterpreter:
         1 + 2
         """
         node = ASTNode(
-            op=ASTNodeType.A_ADD,
+            op=ASTNode.Type.A_ADD,
             left=ASTNode(
-                op=ASTNodeType.A_INTLIT,
+                op=ASTNode.Type.A_INTLIT,
                 intvalue=1,
             ),
             right=ASTNode(
-                op=ASTNodeType.A_INTLIT,
+                op=ASTNode.Type.A_INTLIT,
                 intvalue=2,
             ),
         )
@@ -36,19 +36,19 @@ class TestInterpreter:
         2 * 3 + 5
         """
         node = ASTNode(
-            op=ASTNodeType.A_MULTIPLY,
+            op=ASTNode.Type.A_MULTIPLY,
             left=ASTNode(
-                op=ASTNodeType.A_INTLIT,
+                op=ASTNode.Type.A_INTLIT,
                 intvalue=2,
             ),
             right=ASTNode(
-                op=ASTNodeType.A_ADD,
+                op=ASTNode.Type.A_ADD,
                 left=ASTNode(
-                    op=ASTNodeType.A_INTLIT,
+                    op=ASTNode.Type.A_INTLIT,
                     intvalue=3,
                 ),
                 right=ASTNode(
-                    op=ASTNodeType.A_INTLIT,
+                    op=ASTNode.Type.A_INTLIT,
                     intvalue=5,
                 ),
             ),
