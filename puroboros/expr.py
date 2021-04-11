@@ -55,10 +55,10 @@ class Parser:
         left_node = self.primary(left_token)
         op_token = self.scanner.scan()
 
-        if op_token.type == TokenType.T_EOF:
-            return left_node, op_token
-
-        while self.op_precedence(op_token.type) > precedence:
+        while (
+            op_token.type != TokenType.T_EOF and
+            self.op_precedence(op_token.type) > precedence
+        ):
             right_node, next_op_token = self.bin_expr(self.op_precedence(op_token.type))
             left_node = ASTNode(
                 op=self.arith_op(op_token.type),
@@ -66,7 +66,5 @@ class Parser:
                 right=right_node,
             )
             op_token = next_op_token
-            if op_token.type == TokenType.T_EOF:
-                break
 
         return left_node, op_token
