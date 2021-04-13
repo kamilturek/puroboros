@@ -68,6 +68,23 @@ class TestArithmeticOperator:
         assert str(e.value) == 'Syntax error on line 1'
 
 
+class TestOperatorPrecedence:
+    def test_operator_precedence(self, parser):
+        plus_precedence = parser.op_precedence(Token.Type.T_PLUS)
+        minus_precedence = parser.op_precedence(Token.Type.T_MINUS)
+        star_precedence = parser.op_precedence(Token.Type.T_STAR)
+        slash_precedence = parser.op_precedence(Token.Type.T_SLASH)
+
+        assert plus_precedence == minus_precedence
+        assert star_precedence == slash_precedence
+        assert plus_precedence < star_precedence
+
+    def test_unknown_operator_precedence(self, parser):
+        with pytest.raises(ParserError) as e:
+            parser.op_precedence(Token.Type.T_EOF)
+        
+        assert str(e.value) == 'Syntax error on line 1'
+
 class TestBinaryExpression:
     def test_int_literal(self, parser):
         with patch.object(parser.context, 'infile', StringIO('1')):
