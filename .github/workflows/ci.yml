@@ -24,9 +24,13 @@ jobs:
           pip install -r requirements/dev.txt
           pytest
 
+      - name: Generate coverage badge          
+        run: coverage-badge -o badge.svg
+
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: eu-central-1
+
