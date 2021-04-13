@@ -1,7 +1,8 @@
 import string
 
 from .context import Context
-from .defs import Token, TokenType
+from .defs import Token
+from .exceptions import ScannerError
 
 
 class Scanner:
@@ -35,24 +36,22 @@ class Scanner:
         self.putback(c)
         return val
 
-    def scan(self, token: Token) -> bool:
+    def scan(self) -> Token:
         c = self.skip()
         match c:
             case '':
-                return False
+                return Token(Token.Type.T_EOF)
             case '+':
-                token.type = TokenType.T_PLUS
+                return Token(Token.Type.T_PLUS)
             case '-':
-                token.type = TokenType.T_MINUS
+                return Token(Token.Type.T_MINUS)
             case '*':
-                token.type = TokenType.T_STAR
+                return Token(Token.Type.T_STAR)
             case '/':
-                token.type = TokenType.T_SLASH
+                return Token(Token.Type.T_SLASH)
             case c if c.isdigit():
-                token.type = TokenType.T_INTLIT
-                token.intvalue = self.scanint(c)
+                return Token(Token.Type.T_INTLIT, self.scanint(c))
             case _:
-                print(f'Unrecognized character "{c}"'
-                      f' on line {self.context.line}')
-                return False
-        return True
+                msg = (f'Unrecognized character "{c}"'
+                       f' on line {self.context.line}')
+                raise ScannerError(msg)
