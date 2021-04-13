@@ -24,6 +24,10 @@ jobs:
           pip install -r requirements/dev.txt
           coverage run --source=. -m pytest
 
+      - name: Generate coverage report
+        run: |
+          coverage report -m
+
       - name: Generate coverage badge
         if: github.ref == 'refs/heads/master'
         run: |
