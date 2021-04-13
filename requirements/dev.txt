@@ -12,3 +12,4 @@ toml==0.10.2
 
 # coverage
 coverage==5.5
+coverage-badge==1.0.1
