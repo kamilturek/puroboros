@@ -3,6 +3,7 @@ import sys
 
 from puroboros.context import Context
 from puroboros.expr import Parser
+from puroboros.gen import Generator
 from puroboros.scan import Scanner
 from puroboros.interp import interpret_ast
 
@@ -15,4 +16,7 @@ if __name__ == '__main__':
         parser = Parser(scanner)
 
         node, _ = parser.bin_expr()
-    print(interpret_ast(node))
+
+    generator = Generator()
+    generator.generate(node)
+    print(generator.generator.outstream.getvalue())
