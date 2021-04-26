@@ -1,9 +1,9 @@
 from abc import ABC, abstractmethod
 
-from puroboros.codegen.register import Register
+from puroboros.asm.register import Register
 
 
-class CodeGenerator(ABC):
+class AssemblyGenerator(ABC):
     @abstractmethod
     def load(self) -> Register:
         pass

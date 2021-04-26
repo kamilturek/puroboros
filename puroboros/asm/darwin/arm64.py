@@ -1,15 +1,19 @@
 from io import StringIO
 
-from puroboros.codegen.base import CodeGenerator
-from puroboros.codegen.register import Register, RegisterManager
+from puroboros.asm.base import AssemblyGenerator
+from puroboros.asm.register import Register, RegisterManager
 
 
-class DarwinARM64CodeGenerator(CodeGenerator):
+class DarwinARM64AssemblyGenerator(AssemblyGenerator):
     def __init__(self) -> None:
         self.outstream = StringIO()
         self.registers = RegisterManager([
             'x8', 'x9', 'x10', 'x11'
         ])
+
+    @property
+    def output(self) -> str:
+        return self.outstream.getvalue()
 
     def preamble(self) -> None:
         self.outstream.writelines([
