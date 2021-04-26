@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from typing import Iterable
 
 from puroboros.exceptions import RegisterError
 
@@ -12,12 +13,15 @@ class Register:
         return self.name
 
 
-# maybe instead of having register manager, just use classmethods etc.
 class RegisterManager:
-    def __init__(self, register_names: list[str]) -> None:
+    # TODO
+    # - Disallow mixing register pools
+
+    def __init__(self, register_names: Iterable[str]) -> None:
+        # rename it to pool
         self.registers = [
             Register(name)
-            for name in register_names
+            for name in dict.fromkeys(register_names)
         ]
 
     def free(self, register: Register) -> None:
@@ -25,7 +29,7 @@ class RegisterManager:
             msg = f'Register {register} is already free'
             raise RegisterError(msg)
         register.free = True
-    
+
     def free_all(self) -> None:
         for register in self.registers:
             register.free = True
@@ -38,3 +42,12 @@ class RegisterManager:
         else:
             msg = 'Out of registers'
             raise RegisterError(msg)
+
+
+class RegisterMeta(type):
+    def __new__(cls, name, bases, attrs, **kwargs):
+        new_class = super().__new__(cls, name, bases, attrs, **kwargs)
+        meta = getattr(new_class, 'Meta', None)
+        if hasattr(meta, 'registers'):
+            new_class.registers = RegisterManager(meta.registers)
+        return new_class
