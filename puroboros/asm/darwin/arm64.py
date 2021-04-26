@@ -4,7 +4,7 @@ from puroboros.asm.base import AssemblyGenerator
 from puroboros.asm.register import Register, RegisterManager
 
 
-class DarwinARM64AssemblyGenerator(AssemblyGenerator):
+class DarwinARM64(AssemblyGenerator):
     def __init__(self) -> None:
         self.outstream = StringIO()
         self.registers = RegisterManager([
