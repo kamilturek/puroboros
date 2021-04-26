@@ -4,8 +4,13 @@ from puroboros.asm.register import Register
 
 
 class AssemblyGenerator(ABC):
+    @property
     @abstractmethod
-    def load(self) -> Register:
+    def output(self) -> str:
+        pass
+
+    @abstractmethod
+    def load(self, value: int) -> Register:
         pass
 
     @abstractmethod
