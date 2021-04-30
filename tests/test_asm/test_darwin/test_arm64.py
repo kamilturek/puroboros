@@ -10,7 +10,7 @@ class TestDarwinARM64AssemblyGenerator:
 
     def test_initial_registers(self):
         asm = DarwinARM64()
-        registers = [reg.name for reg in asm.registers.registers]
+        registers = [reg.name for reg in asm.registers.pool]
 
         assert registers == ['x8', 'x9', 'x10', 'x11']
 

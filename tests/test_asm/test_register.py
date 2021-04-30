@@ -21,7 +21,7 @@ class TestRegisterManager:
     def test_init(self):
         manager = RegisterManager(['x0', 'x1'])
 
-        assert manager.registers == [
+        assert manager.pool == [
             Register('x0'),
             Register('x1'),
         ]
@@ -29,24 +29,24 @@ class TestRegisterManager:
     def test_init_blank(self):
         manager = RegisterManager([])
 
-        assert manager.registers == []
+        assert manager.pool == []
 
     def test_init_duplicated_register(self):
         manager = RegisterManager(['x0', 'x0'])
 
-        assert manager.registers == [Register('x0')]
+        assert manager.pool == [Register('x0')]
 
     def test_init_registesr_order(self):
         manager = RegisterManager(['x3', 'x3', 'x1'])
 
-        assert manager.registers == [
+        assert manager.pool == [
             Register('x3'),
             Register('x1'),
         ]
 
     def test_free_register(self):
         manager = RegisterManager(['x0'])
-        register = manager.registers[0]
+        register = manager.pool[0]
         register.free = False
         manager.free(register)
         
@@ -54,7 +54,7 @@ class TestRegisterManager:
 
     def test_already_free_register(self):
         manager = RegisterManager(['x0'])
-        register = manager.registers[0]
+        register = manager.pool[0]
         with pytest.raises(RegisterError) as e:
             manager.free(register)
 
@@ -62,13 +62,13 @@ class TestRegisterManager:
 
     def test_free_all(self):
         manager = RegisterManager(['x0', 'x1'])
-        for register in manager.registers:
+        for register in manager.pool:
             register.free = True
         manager.free_all()
 
         return all(
             register.free is True
-            for register in manager.registers
+            for register in manager.pool
         )
 
     def test_allocate(self):
@@ -116,7 +116,7 @@ class TestRegisterMeta:
                 registers = []
         
         assert isinstance(Class.registers, RegisterManager)
-        assert Class.registers.registers == []
+        assert Class.registers.pool == []
 
     def test_meta_with_registers(self):
         class Class(metaclass=RegisterMeta):
@@ -124,7 +124,7 @@ class TestRegisterMeta:
                 registers = ['x0', 'x1']
         
         assert isinstance(Class.registers, RegisterManager)
-        assert Class.registers.registers == [
+        assert Class.registers.pool == [
             Register('x0'),
             Register('x1'),
         ]

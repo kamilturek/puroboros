@@ -14,12 +14,8 @@ class Register:
 
 
 class RegisterManager:
-    # TODO
-    # - Disallow mixing register pools
-
     def __init__(self, register_names: Iterable[str]) -> None:
-        # rename it to pool
-        self.registers = [
+        self.pool = [
             Register(name)
             for name in dict.fromkeys(register_names)
         ]
@@ -31,11 +27,11 @@ class RegisterManager:
         register.free = True
 
     def free_all(self) -> None:
-        for register in self.registers:
+        for register in self.pool:
             register.free = True
 
     def allocate(self) -> Register:
-        for register in self.registers:
+        for register in self.pool:
             if register.free:
                 register.free = False
                 return register
