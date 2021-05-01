@@ -33,6 +33,14 @@ class TestScan:
 
         assert token == expected_token
 
+    def test_scan_newline(self):
+        context = Context()
+        scanner = Scanner(context)
+        with patch.object(context, 'infile', StringIO('\n')):
+            scanner.scan()
+        
+        assert context.line == 2
+
     def test_raises_scanner_error_on_unrecognized_character(self):
         context = Context()
         scanner = Scanner(context)
