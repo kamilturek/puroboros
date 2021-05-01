@@ -44,6 +44,7 @@ class RegisterMeta(type):
     def __new__(cls, name, bases, attrs, **kwargs):
         new_class = super().__new__(cls, name, bases, attrs, **kwargs)
         meta = getattr(new_class, 'Meta', None)
-        if hasattr(meta, 'registers'):
-            new_class.registers = RegisterManager(meta.registers)
+        new_class._meta = {
+            'registers': getattr(meta, 'registers', []),
+        }
         return new_class

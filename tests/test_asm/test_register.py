@@ -101,30 +101,25 @@ class TestRegisterMeta:
         class Class(metaclass=RegisterMeta):
             pass
         
-        assert hasattr(Class, 'registers') is False
+        assert Class._meta['registers'] == []
 
     def test_blank_meta(self):
         class Class(metaclass=RegisterMeta):
             class Meta:
                 pass
         
-        assert hasattr(Class, 'registers') is False
+        assert Class._meta['registers'] == []
 
     def test_meta_with_blank_registers(self):
         class Class(metaclass=RegisterMeta):
             class Meta:
                 registers = []
         
-        assert isinstance(Class.registers, RegisterManager)
-        assert Class.registers.pool == []
+        assert Class._meta['registers'] == []
 
     def test_meta_with_registers(self):
         class Class(metaclass=RegisterMeta):
             class Meta:
                 registers = ['x0', 'x1']
         
-        assert isinstance(Class.registers, RegisterManager)
-        assert Class.registers.pool == [
-            Register('x0'),
-            Register('x1'),
-        ]
+        assert Class._meta['registers'] == ['x0', 'x1']

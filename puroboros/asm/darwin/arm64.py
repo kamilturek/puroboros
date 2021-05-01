@@ -1,19 +1,12 @@
 from io import StringIO
 
-from puroboros.asm.base import AssemblyGenerator
-from puroboros.asm.register import Register, RegisterManager
+from puroboros.asm.base import Assembly
+from puroboros.asm.register import Register
 
 
-class DarwinARM64(AssemblyGenerator):
-    def __init__(self) -> None:
-        self.outstream = StringIO()
-        self.registers = RegisterManager([
-            'x8', 'x9', 'x10', 'x11'
-        ])
-
-    @property
-    def output(self) -> str:
-        return self.outstream.getvalue()
+class DarwinARM64(Assembly):
+    class Meta:
+        registers = ['x8', 'x9', 'x10', 'x11']
 
     def preamble(self) -> None:
         self.outstream.writelines([

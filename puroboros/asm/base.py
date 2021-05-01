@@ -1,14 +1,23 @@
-from abc import ABC, abstractmethod
+from abc import ABCMeta, abstractmethod
+from io import StringIO
 
-from puroboros.asm.register import Register
+from puroboros.asm.register import Register, RegisterManager, RegisterMeta
 
 
-class AssemblyGenerator(ABC):
+AssemblyMeta = type('AssemblyMeta', (ABCMeta, RegisterMeta), {})
+
+
+class AssemblyBase(metaclass=AssemblyMeta):
+    def __init__(self) -> None:
+        self.registers = RegisterManager(self._meta['registers'])
+        self.outstream = StringIO()
+
     @property
-    @abstractmethod
     def output(self) -> str:
-        pass
+        return self.outstream.getvalue()
 
+
+class Assembly(AssemblyBase):
     @abstractmethod
     def load(self, value: int) -> Register:
         pass
