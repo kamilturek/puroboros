@@ -1,12 +1,11 @@
 from puroboros.asm.factory import AssemblyFactory
 from puroboros.defs import ASTNode
-from puroboros.asm.darwin.arm64 import DarwinARM64
 from puroboros.exceptions import CodeGenerationError
 
 
 class CodeGenerator:
-    def __init__(self) -> None:
-        self.assembly = AssemblyFactory.create()
+    def __init__(self, system=None, machine=None) -> None:
+        self.assembly = AssemblyFactory.create(system, machine)
 
     def generate(self, node: ASTNode) -> None:
         self.assembly.preamble()

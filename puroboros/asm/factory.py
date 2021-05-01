@@ -10,8 +10,8 @@ class AssemblyFactory:
         system = system or platform.system()
         machine = machine or platform.machine()
 
-        match [system, machine]:
-            case ['Darwin', 'arm64']:
+        match [system.lower(), machine.lower()]:
+            case ['darwin', 'arm64']:
                 return DarwinARM64()
             case _:
                 msg = (f'Could not determine assembly engine for '

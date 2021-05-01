@@ -3,7 +3,7 @@ import sys
 
 from puroboros.context import Context
 from puroboros.expr import Parser
-from puroboros.gen import Generator
+from puroboros.gen import CodeGenerator
 from puroboros.scan import Scanner
 
 
@@ -16,6 +16,6 @@ if __name__ == '__main__':
 
         node, _ = parser.bin_expr()
 
-    generator = Generator()
+    generator = CodeGenerator('darwin', 'arm64')
     generator.generate(node)
-    print(generator.generator.outstream.getvalue())
+    print(generator.assembly.outstream.getvalue())
