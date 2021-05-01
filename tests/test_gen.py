@@ -2,12 +2,13 @@ from unittest.mock import Mock, call, patch
 
 import pytest
 
+from puroboros.asm.factory import AssemblyFactory
 from puroboros.defs import ASTNode
 from puroboros.exceptions import CodeGenerationError
 from puroboros.gen import CodeGenerator
 
 
-@patch.object(CodeGenerator, '_get_assembly')
+@patch.object(AssemblyFactory, 'create')
 class TestGenerator:
     def test_get_generator_called(self, m_get_assembly):
         gen = CodeGenerator()
@@ -15,7 +16,7 @@ class TestGenerator:
         assert m_get_assembly.call_count == 1
 
     @patch.object(CodeGenerator, '_generate_ast')
-    def test_generate(self, m_generate_ast, m_get_assembly):
+    def test_generate(self, m_generate_ast, m_create):
         gen = CodeGenerator()
         gen.generate(Mock())
 
@@ -29,7 +30,7 @@ class TestGenerator:
         (ASTNode.Type.A_MULTIPLY, 'mul'),
         (ASTNode.Type.A_DIVIDE, 'div'),
     ])
-    def test_generate_ast(self, m_get_assembly, node_type, method_name):
+    def test_generate_ast(self, m_create, node_type, method_name):
         node = ASTNode(
             op=node_type,
             left=ASTNode(
@@ -49,7 +50,7 @@ class TestGenerator:
             call(1), call(2),
         ])
 
-    def test_generate_ast_unknown_operator(self, m_get_assembly):
+    def test_generate_ast_unknown_operator(self, m_create):
         node = Mock(op='mock', left=None, right=None)
         gen = CodeGenerator()
         with pytest.raises(CodeGenerationError) as e:

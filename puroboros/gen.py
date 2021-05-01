@@ -1,3 +1,4 @@
+from puroboros.asm.factory import AssemblyFactory
 from puroboros.defs import ASTNode
 from puroboros.asm.darwin.arm64 import DarwinARM64
 from puroboros.exceptions import CodeGenerationError
@@ -5,16 +6,12 @@ from puroboros.exceptions import CodeGenerationError
 
 class CodeGenerator:
     def __init__(self) -> None:
-        # use some factory here to get proper generator
-        self.assembly = self._get_assembly()
+        self.assembly = AssemblyFactory.create()
 
     def generate(self, node: ASTNode) -> None:
         self.assembly.preamble()
         self._generate_ast(node)
         self.assembly.postamble()
-
-    def _get_assembly(self):
-        return DarwinARM64()
 
     def _generate_ast(self, node: ASTNode) -> None:
         if node.left:
