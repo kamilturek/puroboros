@@ -2,7 +2,7 @@ from puroboros.asm.darwin.arm64 import DarwinARM64
 from puroboros.asm.register import Register
 
 
-class TestDarwinARM64AssemblyGenerator:
+class TestDarwinARM64:
     def test_initial_output(self):
         asm = DarwinARM64()
 
