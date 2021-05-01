@@ -8,3 +8,6 @@ C compiler written in Python
 ## Prerequisites
 
 - Python 3.10.x
+
+## Supported platforms
+ - Darwin ARM64
